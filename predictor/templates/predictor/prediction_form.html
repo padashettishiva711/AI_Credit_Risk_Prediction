@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm rounded mb-4 px-3">
+    <a class="navbar-brand fw-bold" href="/">
+        Credit Risk AI
+    </a>
+
+    <div class="ms-auto">
+        <a href="/" class="btn btn-outline-primary me-2">
+            New Prediction
+        </a>
+
+        <a href="/history/" class="btn btn-outline-secondary">
+            Prediction History
+        </a>
+    </div>
+</nav>
+
+
+
+    <title>Credit Risk Prediction</title>
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+    <style>
+    .prediction-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    #prediction-form {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-section {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-field {
+        margin-bottom: 5px;
+    }
+
+    #result {
+        margin-top: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .form-section {
+            grid-template-columns: 1fr;
+        }
+
+        #prediction-form {
+            padding: 20px;
+        }
+    }
+</style>
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5 prediction-container">
+
+
+
+
+    <div class="text-center mb-5">
+    <h1 class="fw-bold">AI-Based Credit Risk Prediction System</h1>
+
+    <p class="text-muted">
+        Machine Learning Based Loan Default Risk Assessment
+    </p>
+</div>
+
+    <p>
+        Enter the applicant and loan details below to estimate
+        the probability of loan default.
+    </p>
+
+    <form id="prediction-form">
+        {% csrf_token %}
+
+        <h2>Loan Information</h2>
+
+        <label for="loan_amnt">Loan Amount</label>
+        <input type="number" id="loan_amnt" name="loan_amnt"
+               step="0.01" required>
+
+        <br><br>
+
+        <label for="term">Loan Term</label>
+        <select id="term" name="term" required>
+            <option value="">Select term</option>
+            <option value="36">36 months</option>
+            <option value="60">60 months</option>
+        </select>
+
+        <br><br>
+
+        <label for="int_rate">Interest Rate (%)</label>
+        <input type="number" id="int_rate" name="int_rate"
+               step="0.01" required>
+
+        <br><br>
+
+        <label for="installment">Monthly Installment</label>
+        <input type="number" id="installment" name="installment"
+               step="0.01" required>
+
+
+        <h2>Applicant Information</h2>
+
+        <label for="emp_length">Employment Length (Years)</label>
+        <input type="number" id="emp_length" name="emp_length"
+               min="0" max="10" step="1">
+
+        <br><br>
+
+        <label for="home_ownership">Home Ownership</label>
+        <select id="home_ownership" name="home_ownership" required>
+            <option value="">Select</option>
+            <option value="RENT">Rent</option>
+            <option value="MORTGAGE">Mortgage</option>
+            <option value="OWN">Own</option>
+            <option value="OTHER">Other</option>
+        </select>
+
+        <br><br>
+
+        <label for="annual_inc">Annual Income</label>
+        <input type="number" id="annual_inc" name="annual_inc"
+               step="0.01" required>
+
+        <br><br>
+
+        <label for="verification_status">Verification Status</label>
+        <select id="verification_status"
+                name="verification_status" required>
+            <option value="">Select</option>
+            <option value="Verified">Verified</option>
+            <option value="Source Verified">Source Verified</option>
+            <option value="Not Verified">Not Verified</option>
+        </select>
+
+        <br><br>
+
+        <label for="purpose">Loan Purpose</label>
+        <select id="purpose" name="purpose" required>
+            <option value="">Select purpose</option>
+            <option value="debt_consolidation">Debt Consolidation</option>
+            <option value="credit_card">Credit Card</option>
+            <option value="home_improvement">Home Improvement</option>
+            <option value="major_purchase">Major Purchase</option>
+            <option value="medical">Medical</option>
+            <option value="small_business">Small Business</option>
+            <option value="car">Car</option>
+            <option value="moving">Moving</option>
+            <option value="vacation">Vacation</option>
+            <option value="house">House</option>
+            <option value="renewable_energy">Renewable Energy</option>
+            <option value="other">Other</option>
+        </select>
+
+
+        <h2>Credit Information</h2>
+
+        <label for="dti">Debt-to-Income Ratio</label>
+        <input type="number" id="dti" name="dti" step="0.01">
+
+        <br><br>
+
+        <label for="delinq_2yrs">Delinquencies in Last 2 Years</label>
+        <input type="number" id="delinq_2yrs" name="delinq_2yrs"
+               min="0" required>
+
+        <br><br>
+
+        <label for="inq_last_6mths">Credit Inquiries in Last 6 Months</label>
+        <input type="number" id="inq_last_6mths"
+               name="inq_last_6mths" min="0">
+
+        <br><br>
+
+        <label for="open_acc">Open Credit Accounts</label>
+        <input type="number" id="open_acc" name="open_acc"
+               min="0" required>
+
+        <br><br>
+
+        <label for="pub_rec">Public Records</label>
+        <input type="number" id="pub_rec" name="pub_rec"
+               min="0" required>
+
+        <br><br>
+
+        <label for="revol_bal">Revolving Balance</label>
+        <input type="number" id="revol_bal" name="revol_bal"
+               min="0" step="0.01" required>
+
+        <br><br>
+
+        <label for="revol_util">Revolving Utilization (%)</label>
+        <input type="number" id="revol_util"
+               name="revol_util" step="0.01">
+
+        <br><br>
+
+        <label for="total_acc">Total Credit Accounts</label>
+        <input type="number" id="total_acc" name="total_acc"
+               min="0" required>
+
+        <br><br>
+
+        <label for="mort_acc">Mortgage Accounts</label>
+        <input type="number" id="mort_acc" name="mort_acc"
+               min="0">
+
+        <br><br>
+
+        <label for="pub_rec_bankruptcies">Public Record Bankruptcies</label>
+        <input type="number"
+               id="pub_rec_bankruptcies"
+               name="pub_rec_bankruptcies"
+               min="0">
+
+        <br><br>
+
+        <label for="fico_score">FICO Score</label>
+        <input type="number" id="fico_score" name="fico_score"
+               min="300" max="850" required>
+
+        <br><br>
+
+        <label for="grade">Loan Grade</label>
+        <select id="grade" name="grade" required>
+            <option value="">Select grade</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+        </select>
+
+        <br><br>
+
+        <button
+    type="submit"
+    class="btn btn-primary btn-lg">
+    Predict Credit Risk
+</button>
+
+    </form>
+<div id="result"></div>
+
+<script>
+    const form = document.getElementById("prediction-form");
+    const resultDiv = document.getElementById("result");
+
+    // Apply Bootstrap styling to form controls
+document.querySelectorAll(
+    "#prediction-form input, #prediction-form select"
+).forEach(function (element) {
+
+    if (element.tagName === "SELECT") {
+        element.classList.add("form-select");
+    } else {
+        element.classList.add("form-control");
+    }
+});
+
+
+// Style labels
+document.querySelectorAll(
+    "#prediction-form label"
+).forEach(function (label) {
+    label.classList.add("form-label", "fw-semibold");
+});
+
+
+// Style section headings
+document.querySelectorAll(
+    "#prediction-form h2"
+).forEach(function (heading) {
+    heading.classList.add(
+        "mt-5",
+        "mb-4",
+        "border-bottom",
+        "pb-2"
+    );
+});
+
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const isHigherRisk = result.prediction === 1;
+
+const alertClass = isHigherRisk
+    ? "alert-danger"
+    : "alert-success";
+
+const riskTitle = isHigherRisk
+    ? "Higher Default Risk"
+    : "Lower Default Risk";
+
+resultDiv.innerHTML = `
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+
+            <h2 class="card-title mb-4">
+                Prediction Result
+            </h2>
+
+            <div class="alert ${alertClass}" role="alert">
+                <h4 class="alert-heading">
+                    ${riskTitle}
+                </h4>
+
+                <p class="mb-0">
+                    Estimated probability of default:
+                    <strong>
+                        ${result.default_probability_percent}%
+                    </strong>
+                </p>
+            </div>
+            <div class="mt-4">
+    <div class="d-flex justify-content-between mb-2">
+        <span class="fw-semibold">Default Risk Probability</span>
+        <span>
+            ${result.default_probability_percent}%
+        </span>
+    </div>
+
+    <div
+        class="progress"
+        role="progressbar"
+        aria-valuenow="${result.default_probability_percent}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        style="height: 24px;"
+    >
+        <div
+            class="progress-bar ${
+                isHigherRisk ? "bg-danger" : "bg-success"
+            }"
+            style="width: ${result.default_probability_percent}%;"
+        >
+            ${result.default_probability_percent}%
+        </div>
+    </div>
+</div>
+
+            <div class="row mt-4">
+
+                <div class="col-md-4">
+                    <p class="text-muted mb-1">
+                        Default Probability
+                    </p>
+
+                    <h5>
+                        ${result.default_probability_percent}%
+                    </h5>
+                </div>
+
+                <div class="col-md-4">
+                    <p class="text-muted mb-1">
+                        Decision Threshold
+                    </p>
+
+                    <h5>
+                        ${(result.threshold * 100).toFixed(0)}%
+                    </h5>
+                </div>
+
+                <div class="col-md-4">
+                    <p class="text-muted mb-1">
+                        Prediction ID
+                    </p>
+
+                    <h5>
+                        #${result.id}
+                    </h5>
+                </div>
+
+            </div>
+
+            <p class="text-muted mt-4 mb-0">
+                This prediction is intended for educational
+                decision-support purposes and should not be used
+                as the sole basis for a real lending decision.
+            </p>
+
+        </div>
+    </div>
+`;
+
+
+        const formData = new FormData(form);
+        const data = {};
+
+        for (const [key, value] of formData.entries()) {
+            data[key] = value === "" ? null : value;
+        }
+
+        // Fields that must be numbers
+        const numericFields = [
+            "loan_amnt",
+            "term",
+            "int_rate",
+            "installment",
+            "emp_length",
+            "annual_inc",
+            "dti",
+            "delinq_2yrs",
+            "inq_last_6mths",
+            "open_acc",
+            "pub_rec",
+            "revol_bal",
+            "revol_util",
+            "total_acc",
+            "mort_acc",
+            "pub_rec_bankruptcies",
+            "fico_score"
+        ];
+
+        numericFields.forEach(function (field) {
+            if (data[field] !== null) {
+                data[field] = Number(data[field]);
+            }
+        });
+
+        try {
+            const csrfToken = document.querySelector(
+    "[name=csrfmiddlewaretoken]"
+).value;
+
+const response = await fetch("/api/predict/", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken
+    },
+    body: JSON.stringify(data)
+});
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                resultDiv.innerHTML =
+                    "<h2>Validation Error</h2>" +
+                    "<pre>" +
+                    JSON.stringify(result, null, 2) +
+                    "</pre>";
+
+                return;
+            }
+
+            resultDiv.innerHTML = `
+                <hr>
+
+                <h2>Prediction Result</h2>
+
+                <p>
+                    <strong>Default Probability:</strong>
+                    ${result.default_probability_percent}%
+                </p>
+
+                <p>
+                    <strong>Risk Classification:</strong>
+                    ${result.risk_label}
+                </p>
+
+                <p>
+                    <strong>Decision Threshold:</strong>
+                    ${result.threshold}
+                </p>
+
+                <p>
+                    <strong>Prediction ID:</strong>
+                    ${result.id}
+                </p>
+            `;
+
+        } catch (error) {
+            resultDiv.innerHTML =
+                "<p>Unable to connect to the prediction server.</p>";
+
+            console.error(error);
+        }
+    });
+</script>
+
+</div>
+</body>
+</html>

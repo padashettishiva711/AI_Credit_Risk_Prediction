@@ -1,0 +1,4 @@
+Model,Threshold,Accuracy,Precision,Recall,F1_Score,ROC_AUC
+Logistic Regression,0.50,0.6402,0.3127,0.6697,0.4263,0.7094
+Random Forest,0.50,0.6502,0.3190,0.6631,0.4308,0.7144
+HistGradientBoosting,0.20,0.6505,0.3216,0.6765,0.4359,0.7206

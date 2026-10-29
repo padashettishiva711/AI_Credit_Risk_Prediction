@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction History</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between
+                align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold">
+                Prediction History
+            </h1>
+
+            <p class="text-muted mb-0">
+                Previously generated credit risk assessments
+            </p>
+        </div>
+
+        <a href="/" class="btn btn-primary">
+            New Prediction
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Loan Amount</th>
+                        <th>Annual Income</th>
+                        <th>FICO</th>
+                        <th>Grade</th>
+                        <th>Probability</th>
+                        <th>Risk</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for prediction in predictions %}
+
+                        <tr>
+                            <td>
+                                #{{ prediction.id }}
+                            </td>
+
+                            <td>
+                                {{ prediction.loan_amnt|floatformat:2 }}
+                            </td>
+
+                            <td>
+                                {{ prediction.annual_inc|floatformat:2 }}
+                            </td>
+
+                            <td>
+                                {{ prediction.fico_score|floatformat:0 }}
+                            </td>
+
+                            <td>
+                                {{ prediction.grade }}
+                            </td>
+
+                            <td>
+                                {{ prediction.default_probability_percent|floatformat:2 }}%
+                            </td>
+
+                            <td>
+                                {% if prediction.prediction == 1 %}
+
+                                    <span class="badge bg-danger">
+                                        Higher Risk
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-success">
+                                        Lower Risk
+                                    </span>
+
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ prediction.created_at|date:"d M Y, H:i" }}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="8"
+                                class="text-center text-muted py-4">
+
+                                No predictions available.
+
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

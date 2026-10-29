@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Model Information</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between
+                align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold">Model Information</h1>
+            <p class="text-muted mb-0">
+                Credit risk prediction model performance
+            </p>
+        </div>
+
+        <a href="/" class="btn btn-primary">
+            Back to Prediction
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body p-4">
+
+            <h3>Selected Model</h3>
+
+            <p>
+                HistGradientBoosting Classifier
+            </p>
+
+            <h3 class="mt-4">Performance</h3>
+
+            <div class="table-responsive">
+                <table class="table">
+
+                    <tbody>
+                    <tr>
+                        <th>Accuracy</th>
+                        <td>65.05%</td>
+                    </tr>
+
+                    <tr>
+                        <th>Precision</th>
+                        <td>32.16%</td>
+                    </tr>
+
+                    <tr>
+                        <th>Recall</th>
+                        <td>67.65%</td>
+                    </tr>
+
+                    <tr>
+                        <th>F1 Score</th>
+                        <td>43.59%</td>
+                    </tr>
+
+                    <tr>
+                        <th>ROC-AUC</th>
+                        <td>72.06%</td>
+                    </tr>
+
+                    <tr>
+                        <th>Current Decision Threshold</th>
+                        <td>20%</td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <p class="text-muted mt-3">
+    The model uses a 70% training, 15% validation, and 15% test split.
+    The decision threshold was selected using the validation set, while
+    the final performance metrics were measured on the untouched test set.
+</p>
+
+    <div class="alert alert-warning">
+        <strong>Important:</strong>
+        This system is an educational decision-support prototype.
+        Its predictions should not be used as the sole basis for
+        real-world lending decisions.
+    </div>
+
+</div>
+
+</body>
+</html>
