@@ -241,7 +241,7 @@ python manage.py runserver
 Open the application at:
 
 ```text
-http://127.0.0.1:8000/
+https://ai-credit-risk-prediction.onrender.com/
 ```
 
 ## Automated Tests
