@@ -1,35 +1,81 @@
+# ==========================================
 # Python
+# ==========================================
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyd
 
-# Virtual environment
+# ==========================================
+# Virtual Environments
+# ==========================================
 .venv/
 venv/
+env/
 
-# PyCharm
+# ==========================================
+# PyCharm / IDE
+# ==========================================
 .idea/
+.vscode/
 
-# Environment variables
+# ==========================================
+# Environment Variables / Secrets
+# ==========================================
 .env
 .env.*
+!.env.example
 
+# ==========================================
 # Django
+# ==========================================
 *.log
+local_settings.py
+staticfiles/
+media/
 
-# SQLite
+# ==========================================
+# SQLite Database
+# ==========================================
 db.sqlite3
 db.sqlite3-journal
 
-# ML / large data
+# ==========================================
+# MySQL / Database Backups
+# ==========================================
+*.sql
+*.sql.gz
+*.dump
+
+# ==========================================
+# Large Datasets
+# ==========================================
 data/*.csv
 data/*.csv.gz
+data/*.xlsx
 
-# OS files
+# ==========================================
+# ML Temporary Files
+# ==========================================
+*.pkl
+*.tmp
+*.temp
+
+# Keep the trained model and analytics
+!models/credit_risk_model.joblib
+!models/ml_analytics.json
+
+# ==========================================
+# OS Files
+# ==========================================
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Django collected static files
-staticfiles/
-
-.env
+# ==========================================
+# Build / Test Cache
+# ==========================================
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/

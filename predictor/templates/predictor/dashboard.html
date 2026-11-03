@@ -1,0 +1,358 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            font-family: 'Inter', sans-serif;
+            color: #172033;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 245px;
+            height: 100vh;
+            background: #111c35;
+            padding: 30px 18px;
+            color: white;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: 800;
+            margin: 0 0 40px 10px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #aebbd1;
+            text-decoration: none;
+            padding: 13px 15px;
+            border-radius: 9px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #263a62;
+            color: white;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 35px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #8490a5;
+            font-size: 13px;
+        }
+
+        .stat-card, .panel {
+            background: white;
+            border-radius: 15px;
+            padding: 23px;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 5px 20px rgba(20, 40, 80, .035);
+            height: 100%;
+        }
+
+        .stat-label {
+            color: #8490a5;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 800;
+            margin-top: 12px;
+        }
+
+        .stat-note {
+            color: #8490a5;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .panel-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .table {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .table th {
+            color: #8490a5;
+            font-weight: 600;
+            border-bottom: 1px solid #e9edf4;
+        }
+
+        .risk-high {
+            color: #dc3545;
+            background: #fff0f1;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .risk-low {
+            color: #16845b;
+            background: #e9f8f1;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .primary-btn {
+            background: #315efb;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .primary-btn:hover {
+            background: #244bd4;
+            color: white;
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="brand">Credit<span style="color:#668aff">Risk AI</span></div>
+
+    <a href="{% url 'dashboard' %}" class="active">▦ Dashboard</a>
+    <a href="{% url 'home' %}">＋ New Prediction</a>
+    <a href="{% url 'prediction-history' %}">◷ Prediction History</a>
+    <a href="{% url 'model-info' %}">◈ Model Analytics</a>
+    <a href="/admin/">⚙ Administration</a>
+</aside>
+
+<main class="main">
+
+    <div class="topbar">
+        <div>
+            <h1>Dashboard Overview</h1>
+            <p class="subtitle">Monitor credit risk predictions and model performance.</p>
+        </div>
+        <a href="{% url 'home' %}" class="primary-btn">+ New Prediction</a>
+    </div>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">Total Predictions</div>
+                <div class="stat-value">{{ total_predictions }}</div>
+                <div class="stat-note">All recorded assessments</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">Higher Risk Applicants</div>
+                <div class="stat-value text-danger">{{ higher_risk }}</div>
+                <div class="stat-note">Predicted default risk ≥ threshold</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">Lower Risk Applicants</div>
+                <div class="stat-value text-success">{{ lower_risk }}</div>
+                <div class="stat-note">Predicted default risk below threshold</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">Average Default Probability</div>
+                <div class="stat-value">{{ average_probability }}%</div>
+                <div class="stat-note">Across recorded predictions</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-7">
+            <div class="panel">
+                <div class="panel-title">Risk Distribution</div>
+                <canvas id="riskChart" height="150"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="panel">
+                <div class="panel-title">Machine Learning Performance</div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="stat-label">Accuracy</span>
+                        <strong>{{ model_metrics.accuracy|floatformat:3 }}</strong>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="stat-label">Precision</span>
+                        <strong>{{ model_metrics.precision|floatformat:3 }}</strong>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="stat-label">Recall</span>
+                        <strong>{{ model_metrics.recall|floatformat:3 }}</strong>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="stat-label">F1 Score</span>
+                        <strong>{{ model_metrics.f1_score|floatformat:3 }}</strong>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="stat-label">ROC-AUC</span>
+                        <strong>{{ model_metrics.roc_auc|floatformat:3 }}</strong>
+                    </div>
+                </div>
+
+                <p class="subtitle mt-3">
+                    Decision threshold: 20%. These metrics are evaluation results,
+                    not a guarantee of individual prediction accuracy.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="panel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="panel-title mb-0">Recent Predictions</div>
+            <a href="{% url 'prediction-history' %}" class="subtitle">View all →</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Loan Amount</th>
+                        <th>FICO Score</th>
+                        <th>Default Probability</th>
+                        <th>Risk Classification</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for item in recent_predictions %}
+                    <tr>
+                        <td>#{{ item.id }}</td>
+                        <td>{{ item.loan_amnt|floatformat:2 }}</td>
+                        <td>{{ item.fico_score }}</td>
+                        <td>{{ item.default_probability|floatformat:3 }}</td>
+                        <td>
+                            {% if item.prediction == 1 %}
+                                <span class="risk-high">Higher Risk</span>
+                            {% else %}
+                                <span class="risk-low">Lower Risk</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.created_at|date:"d M Y, H:i" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No predictions recorded yet. Create your first prediction.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const higherRisk = Number("{{ higher_risk|default:0 }}");
+    const lowerRisk = Number("{{ lower_risk|default:0 }}");
+
+    new Chart(document.getElementById("riskChart"), {
+        type: "doughnut",
+        data: {
+            labels: ["Higher Risk", "Lower Risk"],
+            datasets: [{
+                data: [higherRisk, lowerRisk],
+                backgroundColor: ["#ef5350", "#20b486"],
+                borderWidth: 0,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: "70%",
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

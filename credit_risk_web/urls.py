@@ -17,34 +17,20 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
-
-from predictor.views import prediction_form, prediction_history, model_info
-
-
+from predictor.views import (
+    prediction_form,
+    prediction_history,
+    model_info,
+    dashboard,
+    model_analytics,
+)
 
 urlpatterns = [
-    # Frontend
     path("", prediction_form, name="home"),
-
-
-    path(
-            "history/",
-            prediction_history,
-            name="prediction-history"
-        ),
-
-
-path(
-    "model-info/",
-    model_info,
-    name="model-info"
-),
-
-    # Prediction API
+    path("dashboard/", dashboard, name="dashboard"),
+    path("history/", prediction_history, name="prediction-history"),
+    path("model-info/", model_info, name="model-info"),
     path("api/", include("predictor.urls")),
-
-    # Django admin
     path("admin/", admin.site.urls),
-
-
+    path("analytics/", model_analytics, name="model-analytics"),
 ]
