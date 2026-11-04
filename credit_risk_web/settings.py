@@ -89,25 +89,35 @@ WSGI_APPLICATION = 'credit_risk_web.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+DB_ENGINE = os.environ.get(
+    "DB_ENGINE",
+    "django.db.backends.mysql"
+)
+
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get(
-            "DB_ENGINE",
-            "django.db.backends.mysql"
-        ),
+        "ENGINE": DB_ENGINE,
         "NAME": os.environ.get("DB_NAME", "credit_risk_db"),
         "USER": os.environ.get("DB_USER", "root"),
         "PASSWORD": os.environ.get("DB_PASSWORD"),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
         "PORT": os.environ.get("DB_PORT", "3306"),
-    "OPTIONS": {
-        "ssl_mode": "VERIFY_IDENTITY",
-        "ssl": {
-"ca": str(BASE_DIR / os.environ.get("DB_SSL_CA", "certs/isrgrootx1.pem"))
-        },
-    },
     }
 }
+
+# Apply TLS settings only when using TiDB
+if DB_ENGINE == "django_tidb":
+    DATABASES["default"]["OPTIONS"] = {
+        "ssl_mode": "VERIFY_IDENTITY",
+        "ssl": {
+            "ca": str(
+                BASE_DIR / os.environ.get(
+                    "DB_SSL_CA",
+                    "certs/isrgrootx1.pem"
+                )
+            )
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
