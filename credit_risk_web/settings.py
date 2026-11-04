@@ -95,8 +95,14 @@ DATABASES = {
         "NAME": os.environ.get("DB_NAME", "credit_risk_db"),
         "USER": os.environ.get("DB_USER", "root"),
         "PASSWORD": os.environ.get("DB_PASSWORD"),
-        "HOST": os.environ.get("DB_HOST","localhost"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
         "PORT": os.environ.get("DB_PORT", "3306"),
+    "OPTIONS": {
+        "ssl_mode": "VERIFY_IDENTITY",
+        "ssl": {
+"ca": str(BASE_DIR / os.environ.get("DB_SSL_CA", "certs/isrgrootx1.pem"))
+        },
+    },
     }
 }
 
@@ -154,9 +160,12 @@ MAILERS = {
 }
 
 # Production security settings
+# Production security settings
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
