@@ -485,5 +485,28 @@
             "feature": "total_acc",
             "importance": 0.001853
         }
-    ]
+    ],
+    "reference_values": {
+        "loan_amnt": 12000.0,
+        "term": 36.0,
+        "int_rate": 12.74,
+        "installment": 375.43,
+        "emp_length": 6.0,
+        "annual_inc": 65000.0,
+        "dti": 17.61,
+        "delinq_2yrs": 0.0,
+        "inq_last_6mths": 0.0,
+        "open_acc": 11.0,
+        "pub_rec": 0.0,
+        "revol_bal": 11134.0,
+        "revol_util": 52.2,
+        "total_acc": 23.0,
+        "mort_acc": 1.0,
+        "pub_rec_bankruptcies": 0.0,
+        "fico_score": 692.0,
+        "grade": "B",
+        "home_ownership": "MORTGAGE",
+        "verification_status": "Source Verified",
+        "purpose": "debt_consolidation"
+    }
 }

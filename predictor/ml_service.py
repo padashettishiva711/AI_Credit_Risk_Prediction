@@ -13,7 +13,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 MODEL_FILE = PROJECT_ROOT / "models" / "credit_risk_model.joblib"
 ANALYTICS_FILE = PROJECT_ROOT / "models" / "ml_analytics.json"
-DATA_FILE = PROJECT_ROOT / "data" / "credit_risk_dataset.csv"
 
 
 # --------------------------------------------------
@@ -33,106 +32,18 @@ print("Decision threshold:", THRESHOLD)
 
 
 # --------------------------------------------------
-# Load global feature importance
+# Load analytics and reference values
 # --------------------------------------------------
 
-FEATURE_IMPORTANCE = []
+with ANALYTICS_FILE.open("r", encoding="utf-8") as file:
+    analytics = json.load(file)
 
-if ANALYTICS_FILE.exists():
+FEATURE_IMPORTANCE = analytics.get("feature_importance", [])
 
-    with ANALYTICS_FILE.open("r", encoding="utf-8") as file:
-        analytics = json.load(file)
+REFERENCE_VALUES = analytics.get("reference_values", {})
 
-    FEATURE_IMPORTANCE = analytics.get(
-        "feature_importance", []
-    )
-
-
-# --------------------------------------------------
-# Prepare dataset reference values
-# --------------------------------------------------
-
-_REFERENCE_VALUES = None
-
-
-def get_reference_values():
-
-    global _REFERENCE_VALUES
-
-    if _REFERENCE_VALUES is not None:
-        return _REFERENCE_VALUES
-
-    print("Loading dataset reference values...")
-
-    df = pd.read_csv(DATA_FILE, low_memory=False)
-
-    # Apply the same transformations used during training.
-
-    df["term"] = (
-        df["term"]
-        .astype("string")
-        .str.extract(r"(\d+)", expand=False)
-        .astype(float)
-    )
-
-    employment_mapping = {
-        "< 1 year": 0,
-        "1 year": 1,
-        "2 years": 2,
-        "3 years": 3,
-        "4 years": 4,
-        "5 years": 5,
-        "6 years": 6,
-        "7 years": 7,
-        "8 years": 8,
-        "9 years": 9,
-        "10+ years": 10,
-    }
-
-    df["emp_length"] = df["emp_length"].map(
-        employment_mapping
-    )
-
-    df["fico_score"] = (
-        df["fico_range_low"] + df["fico_range_high"]
-    ) / 2
-
-    df.drop(
-        columns=["fico_range_low", "fico_range_high"],
-        inplace=True
-    )
-
-    X = df.drop(columns=["default"])
-
-    numerical_features = X.select_dtypes(
-        include="number"
-    ).columns
-
-    categorical_features = X.select_dtypes(
-        exclude="number"
-    ).columns
-
-    reference = {}
-
-    for feature in numerical_features:
-
-        value = X[feature].median()
-
-        if pd.notna(value):
-            reference[feature] = float(value)
-
-    for feature in categorical_features:
-
-        modes = X[feature].mode(dropna=True)
-
-        if not modes.empty:
-            reference[feature] = modes.iloc[0]
-
-    _REFERENCE_VALUES = reference
-
-    print("Dataset reference values loaded successfully.")
-
-    return _REFERENCE_VALUES
+print("ML analytics loaded successfully.")
+print("Reference features:", len(REFERENCE_VALUES))
 
 
 # --------------------------------------------------
@@ -141,11 +52,9 @@ def get_reference_values():
 
 def generate_explanation(applicant_data, actual_probability):
 
-    reference_values = get_reference_values()
+    explanations = []
 
     applicant_df = pd.DataFrame([applicant_data])
-
-    explanations = []
 
     for item in FEATURE_IMPORTANCE[:5]:
 
@@ -154,11 +63,11 @@ def generate_explanation(applicant_data, actual_probability):
         if feature not in applicant_data:
             continue
 
-        if feature not in reference_values:
+        if feature not in REFERENCE_VALUES:
             continue
 
         applicant_value = applicant_data[feature]
-        reference_value = reference_values[feature]
+        reference_value = REFERENCE_VALUES[feature]
 
         # Replace only one feature with its reference value.
 
@@ -169,10 +78,6 @@ def generate_explanation(applicant_data, actual_probability):
         comparison_probability = float(
             model.predict_proba(comparison_df)[0][1]
         )
-
-        # Positive means the applicant's actual value
-        # is associated with a higher model score
-        # than the reference value.
 
         change = (
             actual_probability - comparison_probability
@@ -199,11 +104,7 @@ def generate_explanation(applicant_data, actual_probability):
                 else "Not provided"
             ),
 
-            "reference_value": (
-                reference_value.item()
-                if hasattr(reference_value, "item")
-                else reference_value
-            ),
+            "reference_value": reference_value,
 
             "comparison_probability_percent": round(
                 comparison_probability * 100, 2
